@@ -59,8 +59,7 @@ public class CharacterStateMachine : MonoBehaviour
 
         var idleState = new CharacterIdleState(characterAnimatorController);
         var runState = new CharacterRunState(characterAnimatorController, inputManager, _rigidbody, speed, speedRotate);
-        var jumpAndFallState = new CharacterJumpState(characterAnimatorController, inputManager, _rigidbody, speed, speedRotate, heightJump);
-        //var landState = new CharacterLandState(characterAnimatorController);
+        var jumpAndFallState = new CharacterJumpFallState(characterAnimatorController, inputManager, _rigidbody, speed, speedRotate, heightJump);
 
         idleState.AddTransition(new StateTransition(runState, new FuncStateCondition(() => Mathf.Abs(inputManager.MoveDirectionHorizontal) > 0.1f)));
         runState.AddTransition(new StateTransition(idleState, new FuncStateCondition(() => Mathf.Abs(inputManager.MoveDirectionHorizontal) < 0.1f)));
@@ -68,7 +67,7 @@ public class CharacterStateMachine : MonoBehaviour
         idleState.AddTransition(new StateTransition(jumpAndFallState, new FuncStateCondition(() => _isGrounded && inputManager.IsJumping)));
         runState.AddTransition(new StateTransition(jumpAndFallState, new FuncStateCondition(() => _isGrounded && inputManager.IsJumping)));
 
-        jumpAndFallState.AddTransition(new StateTransition(idleState, new AnimationFinishCondition(_animator, CharacterAnimationParameter.Land.ToString())));
+        jumpAndFallState.AddTransition(new StateTransition(idleState, new FuncStateCondition(() => _isGrounded)));
 
         _stateMachine = new StateMachine(idleState);
     }

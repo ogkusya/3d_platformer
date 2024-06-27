@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterJumpState : State
+public class CharacterJumpFallState : State
 {
     private readonly CharacterAnimatorController _characterAnimationController;
     private readonly InputManager _inputManager;
@@ -10,9 +10,8 @@ public class CharacterJumpState : State
     private readonly float _speed;
     private readonly float _speedRotate;
     private readonly float _forceJump;
-    private bool _isJumping = false;
 
-    public CharacterJumpState(CharacterAnimatorController characterAnimationController, InputManager inputManager, Rigidbody rigidBody, float speed, float speedRotate, float forceJump)
+    public CharacterJumpFallState(CharacterAnimatorController characterAnimationController, InputManager inputManager, Rigidbody rigidBody, float speed, float speedRotate, float forceJump)
     {
         _characterAnimationController = characterAnimationController;
         _inputManager = inputManager;
@@ -24,17 +23,11 @@ public class CharacterJumpState : State
 
     public override void OnStateEntered()
     {
-        if (!_isJumping)
-        {
-            _isJumping = true;
-            _characterAnimationController.SetBool(CharacterAnimationParameter.Grounded, false);
-            Jump();
-        }
+        Jump();
     }
 
     public override void OnStateExited()
     {
-        _isJumping = false;
     }
 
     public override void OnFixedUpdate()
@@ -54,7 +47,6 @@ public class CharacterJumpState : State
     private void Move()
     {
         _rigidBody.velocity = new Vector3(0, _rigidBody.velocity.y, _inputManager.MoveDirectionHorizontal * _speed);
-        //_rigidBody.velocity = _inputManager.MoveDirection * _speed;
     }
 
     private void Rotate2()
@@ -64,7 +56,4 @@ public class CharacterJumpState : State
             _rigidBody.MoveRotation(Quaternion.LookRotation(new Vector3(0, 0, _rigidBody.velocity.z)));
         }
     }
-
-
-    
 }
