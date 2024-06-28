@@ -13,7 +13,8 @@ public class StateMachine
 
     public void OnUpdate() //Update
     {
-        var newIndex = IsTransitionsCondition(); //Check all transitions for current state 
+        var newIndex = IsTransitionsCondition();
+        //Check all transitions for current state 
         if (newIndex != -1
         ) //If a transition is found with a fullfilled condition, then we change the state to the one indicated in the transition
         {

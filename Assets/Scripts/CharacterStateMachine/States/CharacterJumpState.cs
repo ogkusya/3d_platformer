@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterJumpFallState : State
+public class CharacterJumpState : State
 {
     private readonly CharacterAnimatorController _characterAnimationController;
     private readonly InputManager _inputManager;
@@ -10,9 +10,8 @@ public class CharacterJumpFallState : State
     private readonly float _speed;
     private readonly float _speedRotate;
     private readonly float _forceJump;
-    private bool isCanAirJump;
 
-    public CharacterJumpFallState(CharacterAnimatorController characterAnimationController, InputManager inputManager, Rigidbody rigidBody, float speed, float speedRotate, float forceJump)
+    public CharacterJumpState(CharacterAnimatorController characterAnimationController, InputManager inputManager, Rigidbody rigidBody, float speed, float speedRotate, float forceJump)
     {
         _characterAnimationController = characterAnimationController;
         _inputManager = inputManager;
@@ -24,7 +23,6 @@ public class CharacterJumpFallState : State
 
     public override void OnStateEntered()
     {
-        isCanAirJump = true;
         Jump();
         _characterAnimationController.SetBool(CharacterAnimationParameter.JumpBool, true);
     }
@@ -32,16 +30,6 @@ public class CharacterJumpFallState : State
     public override void OnStateExited()
     {
         _characterAnimationController.SetBool(CharacterAnimationParameter.JumpBool, false);
-    }
-
-    // called every frame
-    public override void Tick()
-    {
-        if (_inputManager.IsJumping && isCanAirJump)
-        {
-            isCanAirJump = false;
-            Jump();
-        }
     }
 
     public override void OnFixedUpdate()
@@ -55,7 +43,7 @@ public class CharacterJumpFallState : State
 
     private void Jump()
     {
-        _rigidBody.velocity = Vector3.up * _forceJump;
+        _rigidBody.AddForce(Vector3.up * _forceJump, ForceMode.Impulse);
     }
 
     private void Move()
